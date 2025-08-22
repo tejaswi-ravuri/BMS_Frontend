@@ -4,16 +4,23 @@ import AppSidebar from "@/components/AppSidebar";
 import AppNavbar from "@/components/AppNavbar";
 import PathConfig from "@/Routes/Pathconfig";
 import axiosInstance from "@/services/axiosInstance";
-import { Navigate } from "react-router-dom";
+import { Navigate, useNavigate } from "react-router-dom";
 import { login } from "./store/userSlice";
-import { useDispatch } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 
 export default function App() {
   const dispatch = useDispatch();
+  const navigate = useNavigate();
+  const { isLoggedIn } = useSelector((state) => state.user);
+
+  console.log(
+    "islogged in----",
+    useSelector((state) => state.user)
+  );
   const token = localStorage.getItem("token");
   useEffect(() => {
     if (!token) {
-      <Navigate to="/login" />;
+      navigate("/login");
       return;
     }
 
@@ -22,7 +29,9 @@ export default function App() {
         await axiosInstance
           .get("/user/getUserInfo")
           .then((res) => {
+            console.log("login res----", res);
             dispatch(login(res.data));
+            navigate("/dashboard");
           })
           .catch((err) => {
             console.log("err----", err);
@@ -31,22 +40,22 @@ export default function App() {
         // here you could dispatch to Redux store
       } catch (err) {
         console.error("err----", err);
-        <Navigate to="/login" />;
+        // <Navigate to="/login" />;
       }
     };
 
     getUserinfo();
-  }, []);
+  }, [token]);
 
   return (
     <SidebarProvider>
       <div className="flex w-full min-h-screen bg-gray-50">
         {/* Sidebar */}
-        <AppSidebar />
+        {isLoggedIn && <AppSidebar />}
 
         {/* Main content area */}
         <div className="flex flex-col flex-1">
-          <AppNavbar />
+          {isLoggedIn && <AppNavbar />}
           <main className="p-10 overflow-y-auto ">
             <PathConfig />
           </main>

@@ -30,7 +30,7 @@ export default function LoginPage() {
       [id]: value,
     }));
   };
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
 
     const { email, password } = loginDetails;
@@ -39,17 +39,26 @@ export default function LoginPage() {
       return;
     }
 
-    axios
+    await axios
       .post(`${baseurl}/auth/login`, loginDetails)
       .then((res) => {
-        console.log("login res---", res);
-        const { token, user } = res.data;
+        console.log("login res---", res.data);
+
+        // Check carefully what backend sends
+        const token = res.data.token || res.data.accessToken;
+        const user = res.data.user;
+
+        if (!token) {
+          console.error("No token received from backend!");
+          return;
+        }
+
         localStorage.setItem("token", token);
+        console.log("Token in LS---", localStorage.getItem("token"));
+
         localStorage.setItem("role", user.role);
         dispatch(login(user));
-        console.log("-----1");
         navigate("/dashboard");
-        console.log("------2");
       })
       .catch((err) => {
         console.log("login err---", err);

@@ -22,7 +22,7 @@ export default function SettingsPage({ currentUser }) {
       </div>
 
       {/* Profile Information Card */}
-      <Card>
+      {/* <Card>
         <CardHeader>
           <CardTitle className="flex items-center gap-2">
             <User className="h-5 w-5" />
@@ -82,7 +82,7 @@ export default function SettingsPage({ currentUser }) {
             <Button variant="outline">Cancel</Button>
           </div>
         </CardContent>
-      </Card>
+      </Card> */}
 
       {/* Account Statistics Card */}
       <Card>

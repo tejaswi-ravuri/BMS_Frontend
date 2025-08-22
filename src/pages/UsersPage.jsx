@@ -26,18 +26,16 @@ export default function UsersPage() {
 
   const handleAddOrUpdateUser = (data) => {
     if (editingUser) {
-      setUsers(
-        users.map((user) =>
-          user.id === editingUser.id ? { ...user, ...data } : user
-        )
-      );
+      // Update user in Redux
+      dispatch(updateUserSuccess({ ...editingUser, ...data }));
     } else {
+      // Add user in Redux (after API call ideally)
       const newUser = {
         id: users.length + 1,
         ...data,
         status: "active",
       };
-      setUsers([...users, newUser]);
+      dispatch(addUserSuccess(newUser));
     }
     setEditingUser(null);
   };
@@ -48,7 +46,7 @@ export default function UsersPage() {
   };
 
   const handleDelete = (user) => {
-    setUsers(users.filter((u) => u.id !== user.id));
+    // dispatch(deleteUserSuccess(user.id));
     setDeletingUser(null);
   };
 

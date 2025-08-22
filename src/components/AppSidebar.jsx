@@ -11,40 +11,36 @@ import {
   SidebarHeader,
 } from "@/components/ui/sidebar";
 import { Link } from "react-router-dom";
-import { useEffect } from "react";
+import { useSelector } from "react-redux";
 
 export default function AppSidebar() {
+  const { currentUser } = useSelector((state) => state.user);
   const menuItems = [
     {
       title: "Dashboard",
       icon: BarChart3,
       id: "dashboard",
     },
-    // {
-    //   title: "Bids",
-    //   icon: FolderOpen,
-    //   id: "bids",
-    // },
     {
       title: "Bids",
       icon: FileText,
       id: "bids",
     },
-    {
-      title: "Users",
-      icon: Users,
-      id: "users",
-    },
+    ...(currentUser?.role === "admin"
+      ? [
+          {
+            title: "Users",
+            icon: Users,
+            id: "users",
+          },
+        ]
+      : []),
     {
       title: "Settings",
       icon: Settings,
       id: "settings",
     },
   ];
-
-  useEffect(() => {
-    console.log("--");
-  }, []);
 
   return (
     <div className="w-48 min-h-screen bg-amber-200">

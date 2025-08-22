@@ -7,10 +7,12 @@ import SettingsPage from "@/pages/SettingsPage";
 import UsersPage from "@/pages/UsersPage";
 import ProfilePage from "../pages/profilePage";
 export default function PathConfig() {
-  const token = localStorage.getItem("token");
+  // const token = localStorage.getItem("token");
   const role = localStorage.getItem("role");
 
   function PrivateRoutes() {
+    const token = localStorage.getItem("token");
+    console.log("----token", token);
     return token ? <Outlet /> : <Navigate to="/login" />;
   }
 
@@ -23,9 +25,9 @@ export default function PathConfig() {
         <Route path="/bids" element={<BidsPage />} />
         <Route path="/settings" element={<SettingsPage />} />
         <Route path="/profile" element={<ProfilePage />} />
-        <Route path="/users" element={<UsersPage />} />
+        {role === "admin" && <Route path="/users" element={<UsersPage />} />}
       </Route>
-      <Route path="*" element={<Navigate to="/" />} />
+      <Route path="*" element={<Navigate to="/dashboard" />} />
     </Routes>
   );
 }

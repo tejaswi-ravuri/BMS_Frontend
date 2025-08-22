@@ -100,19 +100,27 @@ export default function UserFormModal({
 
     setLoading(true);
     try {
-      await axiosInstance
-        .post("/user/addUser", formData)
-        .then((res) => {
-          console.log("add user---", res);
-        })
-        .catch((err) => {
-          console.log("err----", err);
-        });
-      // onSubmit(res.data);
+      let res;
+      if (initialData) {
+        // EDIT MODE
+        res = await axiosInstance.put(
+          `/user/updateUser/${initialData._id}`,
+          formData
+        );
+      } else {
+        // ADD MODE
+        res = await axiosInstance.post("/user/addUser", formData);
+      }
+
+      console.log("user saved---", res.data);
+
+      // ✅ Tell parent to update Redux/local state
+      onSubmit(res.data.user);
+
       onClose();
     } catch (err) {
-      console.error("Add user error:", err);
-      setErrors({ form: err.response?.data?.error || "Failed to add user" });
+      console.error("Add/Edit user error:", err);
+      setErrors({ form: err.response?.data?.error || "Failed to save user" });
     } finally {
       setLoading(false);
     }
